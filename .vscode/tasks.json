@@ -14,19 +14,13 @@
     },
     {
       "type": "shell",
-      "label": "gcc build active file",
-      "command": "/usr/bin/gcc",
+      "label": "debug",
+      "command": "make",
       "args": [
-        "-g",
-        "${file}",
-        "-o",
-        "${fileDirname}/${fileBasenameNoExtension}"
-      ],
-      "options": {
-        "cwd": "/usr/bin"
-      },
-      "problemMatcher": [
-        "$gcc"
+        "debug",
+        "&&",
+        "lldb",
+        "debug"
       ]
     }
   ],

@@ -30,29 +30,52 @@ public:
   int getSize() { return size; };
   void setSize(int s) { size = s; };
   char *getMsg();
+  void operator=(MsgCache &D)
+  {
+    count = D.getCount();
+    int l = D.getSize();
+    size = l;
+    cacheList = new Msg[l];
+    for (int i = 0; i < count; i++)
+    {
+      char *s = D.cacheList[i].GetMsg();
+      cacheList[i].SetMsg(s, sizeof(s));
+    }
+  }
 
 private:
-  int count; //已保存的消息数量
-  int size;  //可以保存的消息数量
-  Msg cache; //保存消息的指针
+  int count;      //已保存的消息数量
+  int size;       //可以保存的消息数量
+  Msg cache;      //保存消息的指针
+  Msg *cacheList; //保存消息的指针
 };
 
 void MsgCache::show()
 {
-  cout << cache.GetMsg() << endl;
+  int count = this->getCount();
+  for (int i = 0; i < count; i++)
+  {
+    cout << cacheList[i].GetMsg() << endl;
+  }
 }
 char *MsgCache::getMsg()
 {
-  char *c = cache.GetMsg();
+  char *c = cacheList[0].GetMsg();
+  int count = this->getCount();
+  for (int i = 1; i < count; i++)
+  {
+    strcat(c, cacheList[i].GetMsg());
+  }
   return c;
 }
 
 MsgCache::MsgCache(int l)
 {
+  cacheList = new Msg[l];
   count = 0;
   size = l;
   char p[] = "";
-  cache.SetMsg(p, l);
+  cacheList[0].SetMsg(p, l);
 }
 
 bool MsgCache::Add_msg(char *s, int l)
@@ -61,7 +84,7 @@ bool MsgCache::Add_msg(char *s, int l)
   int size = this->getSize();
   if (count >= size)
     return false;
-  cache.SetMsg(s, l);
+  cacheList[count].SetMsg(s, l);
   this->setCount(count + 1);
   return true;
 }
